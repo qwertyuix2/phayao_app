@@ -30,6 +30,19 @@ class _HomePageState extends State<HomePage> {
 
   ApiProvider apiProvider = ApiProvider();
 
+  String displayName;
+  String email;
+  String photoUrl;
+
+  Future getInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      displayName = prefs.getString('displayName');
+      email = prefs.getString('email');
+      photoUrl = prefs.getString('photoUrl');
+    });
+  }
+
   Future fetchUsers() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -59,6 +72,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     fetchUsers();
+    getInfo();
   }
 
   @override
@@ -130,12 +144,12 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             UserAccountsDrawerHeader(
               accountName: Text(
-                'Satit Rianpit',
+                displayName ?? 'Demo User',
                 style: TextStyle(fontSize: 20.0),
               ),
-              accountEmail: Text('rianpit@gmail.com'),
+              accountEmail: Text(email ?? 'demo@demo.com'),
               currentAccountPicture: CircleAvatar(
-                backgroundImage: NetworkImage(
+                backgroundImage: NetworkImage(photoUrl ??
                     'https://randomuser.me/api/portraits/med/men/90.jpg'),
               ),
             ),

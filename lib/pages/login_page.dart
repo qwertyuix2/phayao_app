@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:kpi/pages/home_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kpi/api_provider.dart';
 import 'package:kpi/helper.dart';
+import 'package:kpi/pages/home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -32,6 +32,15 @@ class _LoginPageState extends State<LoginPage> {
     try {
       GoogleSignInAccount googleUser = await _googleSignIn.signIn();
       print(googleUser);
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('displayName', googleUser.displayName);
+      await prefs.setString('email', googleUser.email);
+      await prefs.setString('photoUrl', googleUser.photoUrl);
+
+      Navigator
+          .of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
     } catch (error) {
       print(error);
     }
